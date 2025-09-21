@@ -2,7 +2,7 @@
  * @Author: Zichu Zhao 
  * @Date: 2025-09-11
  * @LastEditors: Zichu Zhao 965927155@qq.com
- * @LastEditTime: 2025-09-21 22:50:51
+ * @LastEditTime: 2025-09-21 23:01:21
  * @FilePath: /main.cpp
  * @Description: AVL Tree implementation with insert, delete, and traversal
  *               Assignment code with some debug traces for testing.
@@ -181,8 +181,9 @@ if (val < root->data) {
                 return nullptr;
             } else {
                 // one child -> copy
-                *root = *child;
-                delete child;
+                Node* temp = root->left ? root->left : root->right;
+                delete root;
+                return temp;
             }
         } else {
             // two children
