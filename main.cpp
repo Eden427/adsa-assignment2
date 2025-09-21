@@ -2,7 +2,7 @@
  * @Author: Zichu Zhao 
  * @Date: 2025-09-11
  * @LastEditors: Zichu Zhao 965927155@qq.com
- * @LastEditTime: 2025-09-21 22:46:28
+ * @LastEditTime: 2025-09-21 22:50:51
  * @FilePath: /main.cpp
  * @Description: AVL Tree implementation with insert, delete, and traversal
  *               Assignment code with some debug traces for testing.
@@ -293,7 +293,7 @@ int main() {
     // do traversal
     vector<int> out;
     if (traversal == "PRE") {
-        inOrder(root, out);
+        preOrder(root, out);
     } else if (traversal == "IN") {
         inOrder(root, out);
     } else if (traversal == "POST") {
