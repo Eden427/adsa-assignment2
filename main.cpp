@@ -2,7 +2,7 @@
  * @Author: Zichu Zhao 
  * @Date: 2025-09-11
  * @LastEditors: Zichu Zhao 965927155@qq.com
- * @LastEditTime: 2025-09-21 23:01:21
+ * @LastEditTime: 2025-09-21 23:19:48
  * @FilePath: /main.cpp
  * @Description: AVL Tree implementation with insert, delete, and traversal
  *               Assignment code with some debug traces for testing.
@@ -145,71 +145,61 @@ Node* insertNode(Node* root, int val){
 
 }
 
-// find the minimum node(used for deletion)
-Node* findMin(Node* root){
-    while (root != nullptr && root->left != nullptr){
-        root = root->left;
+// find the max node(used for deletion)
+Node* findMax(Node* root) {
+    while (root != nullptr && root->right != nullptr) {
+        root = root->right;
     }
     return root;
 }
 
-// Delete a node from AVL tree
 Node* deleteNode(Node* root, int val){
-    if (root == nullptr){
-        // cout << "[debug]value not found for deletion: " << val << endl;
-        return root;
-    }
+    if (root == nullptr) return root;
 
-if (val < root->data) {
-        root->left = deleteNode(root->left, val);
+    if (val < root->data) {
+        root->left  = deleteNode(root->left,  val);
     } else if (val > root->data) {
         root->right = deleteNode(root->right, val);
     } else {
-        // Node found
+        // found the node
         if (root->left == nullptr || root->right == nullptr) {
-            Node* child;
-            if (root->left != nullptr) {
-                child = root->left;
-            } else {
-                child = root->right;
-            }
-
-            if (child == nullptr) {
-                // no child
-                // cout << "[DEBUG] delete leaf: " << root->data << endl;
+            Node* child = (root->left != nullptr) ? root->left : root->right;
+            if (child == nullptr) {        // no child
                 delete root;
                 return nullptr;
-            } else {
-                // one child -> copy
-                Node* temp = root->left ? root->left : root->right;
+            } else {                        // one child
                 delete root;
-                return temp;
+                return child;               // return subtree pointer upward
             }
         } else {
-            // two children
-            Node* succ = findMin(root->right);
-            root->data = succ->data;
-            root->right = deleteNode(root->right, succ->data);
+            // two children case
+            Node* pred = findMax(root->left);
+            root->data = pred->data;
+            root->left = deleteNode(root->left, pred->data);
         }
     }
 
+    // rebalance on the way back
     updateHeight(root);
     int bf = getBalance(root);
 
-    if (bf > 1 && getBalance(root->left) >= 0) return rotateRight(root);
+    if (bf > 1 && getBalance(root->left) >= 0) {
+        return rotateRight(root);             // LL
+    }
     if (bf > 1 && getBalance(root->left) < 0) {
-        root->left = rotateLeft(root->left);
+        root->left = rotateLeft(root->left);  // LR
         return rotateRight(root);
     }
-    if (bf < -1 && getBalance(root->right) <= 0) return rotateLeft(root);
+    if (bf < -1 && getBalance(root->right) <= 0) {
+        return rotateLeft(root);              // RR
+    }
     if (bf < -1 && getBalance(root->right) > 0) {
-        root->right = rotateRight(root->right);
+        root->right = rotateRight(root->right);// RL
         return rotateLeft(root);
     }
-
     return root;
-          
 }
+
 
 // Traversal functions
 void preOrder(Node* root, vector<int> &out){
